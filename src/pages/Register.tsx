@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { UserType } from '../contexts/AuthContext';
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -8,77 +9,43 @@ const Register: React.FC = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    userType: 'marca'
+    userType: 'marca' as UserType
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Simulación de registro
-    alert('Registro simulado - En producción aquí crearías la cuenta');
+    console.log('Registrando usuario:', formData);
+    alert('Registro exitoso (simulado)');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }));
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Crear cuenta
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            O{' '}
-            <Link
-              to="/login"
-              className="font-medium hover:underline"
-              style={{ color: '#823af3' }}
-            >
-              inicia sesión aquí
-            </Link>
-          </p>
-        </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
+          Crear cuenta
+        </h2>
+        <p className="mt-2 text-center text-sm text-gray-600">
+          ¿Ya tienes cuenta?{' '}
+          <Link to="/login" className="font-medium" style={{ color: '#823af3' }}>
+            Inicia sesión aquí
+          </Link>
+        </p>
+      </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                Nombre completo
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50"
-                style={{ focusRingColor: '#823af3' }}
-                placeholder="Tu nombre completo"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50"
-                style={{ focusRingColor: '#823af3' }}
-                placeholder="tu-email@ejemplo.com"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="userType" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="userType" className="block text-sm font-medium text-gray-700">
                 Tipo de usuario
               </label>
               <select
@@ -86,8 +53,7 @@ const Register: React.FC = () => {
                 name="userType"
                 value={formData.userType}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50"
-                style={{ focusRingColor: '#823af3' }}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
               >
                 <option value="marca">Marca</option>
                 <option value="creador">Creador</option>
@@ -95,46 +61,69 @@ const Register: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                Nombre completo
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                value={formData.name}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Contraseña
               </label>
               <input
                 id="password"
                 name="password"
                 type="password"
+                required
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50"
-                style={{ focusRingColor: '#823af3' }}
-                placeholder="Tu contraseña"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
               />
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
                 Confirmar contraseña
               </label>
               <input
                 id="confirmPassword"
                 name="confirmPassword"
                 type="password"
+                required
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-opacity-50"
-                style={{ focusRingColor: '#823af3' }}
-                placeholder="Confirma tu contraseña"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
               />
             </div>
-          </div>
 
-          <div>
             <button
               type="submit"
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2"
-              style={{ 
-                backgroundColor: '#823af3',
-                focusRingColor: '#823af3'
-              }}
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white transition-colors duration-200"
+              style={{ backgroundColor: '#823af3' }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = '#6f2db8';
               }}
@@ -144,8 +133,8 @@ const Register: React.FC = () => {
             >
               Registrarse
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

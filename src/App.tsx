@@ -20,6 +20,7 @@ import QueEsUGC from "./pages/QueEsUGC";
 import Propuestas from "./pages/Propuestas";
 import Favoritos from "./pages/Favoritos";
 import MisPagos from "./pages/MisPagos";
+import CreatorProposals from "./pages/CreatorProposals";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +45,7 @@ const App = () => (
                 <Route path="/explora" element={<Explora />} />
                 <Route path="/que-es-ugc" element={<QueEsUGC />} />
                 <Route path="/propuestas" element={<Propuestas />} />
+                <Route path="/propuestas-creador/:creatorId" element={<CreatorProposals />} />
                 <Route path="/favoritos" element={<Favoritos />} />
                 <Route path="/mis-pagos" element={<MisPagos />} />
                 <Route path="*" element={<NotFound />} />

@@ -1,30 +1,15 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useProjects } from '../contexts/ProjectContext';
-
-interface FormData {
-  name: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  minCreators: string;
-  maxCreators: string;
-}
-
-interface FormErrors {
-  name?: string;
-  description?: string;
-  startDate?: string;
-}
+import { useNavigate } from 'react-router-dom';
 
 const CreateProject: React.FC = () => {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const { createProject } = useProjects();
+  const navigate = useNavigate();
   
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState({
     name: '',
     description: '',
     startDate: '',
@@ -32,33 +17,18 @@ const CreateProject: React.FC = () => {
     minCreators: '',
     maxCreators: ''
   });
+  
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const [errors, setErrors] = useState<FormErrors>({});
-
+  // Redirigir si no es una marca autenticada
   React.useEffect(() => {
     if (!user || user.type !== 'marca') {
       navigate('/login');
     }
   }, [user, navigate]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    
-    // Clear error when user starts typing
-    if (errors[name as keyof FormErrors]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: undefined
-      }));
-    }
-  };
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
     
     if (!formData.name.trim()) {
       newErrors.name = 'El nombre del proyecto es obligatorio';
@@ -71,7 +41,7 @@ const CreateProject: React.FC = () => {
     if (!formData.startDate) {
       newErrors.startDate = 'La fecha de inicio es obligatoria';
     }
-
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -80,7 +50,6 @@ const CreateProject: React.FC = () => {
     e.preventDefault();
     
     if (validateForm()) {
-      // Create project
       createProject({
         name: formData.name,
         description: formData.description,
@@ -95,25 +64,36 @@ const CreateProject: React.FC = () => {
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Limpiar error cuando el usuario empiece a escribir
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
   if (!user || user.type !== 'marca') {
     return null;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+    <div className="min-h-screen bg-white py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             ¡Crea tu Proyecto!
           </h1>
-          <p className="text-gray-600">
-            Define los detalles de tu nuevo proyecto UGC
-          </p>
         </div>
 
-        {/* Form */}
-        <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="bg-white shadow-lg rounded-lg p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Nombre del proyecto */}
             <div>
@@ -125,20 +105,13 @@ const CreateProject: React.FC = () => {
                 id="name"
                 name="name"
                 value={formData.name}
-                onChange={handleInputChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-colors duration-200 ${
-                  errors.name 
-                    ? 'border-red-500 focus:ring-red-500' 
-                    : 'border-gray-300 focus:border-transparent'
+                onChange={handleChange}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+                  errors.name ? 'border-red-500' : 'border-gray-300'
                 }`}
-                style={{ 
-                  focusRingColor: errors.name ? undefined : '#823af3'
-                }}
-                placeholder="Ej: Campaña Verano 2024"
+                placeholder="Ingresa el nombre de tu proyecto"
               />
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-              )}
+              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
             </div>
 
             {/* Descripción */}
@@ -149,22 +122,15 @@ const CreateProject: React.FC = () => {
               <textarea
                 id="description"
                 name="description"
-                value={formData.description}
-                onChange={handleInputChange}
                 rows={4}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-colors duration-200 resize-none ${
-                  errors.description 
-                    ? 'border-red-500 focus:ring-red-500' 
-                    : 'border-gray-300 focus:border-transparent'
+                value={formData.description}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-vertical ${
+                  errors.description ? 'border-red-500' : 'border-gray-300'
                 }`}
-                style={{ 
-                  focusRingColor: errors.description ? undefined : '#823af3'
-                }}
-                placeholder="Describe los objetivos y detalles de tu proyecto..."
+                placeholder="Describe tu proyecto en detalle"
               />
-              {errors.description && (
-                <p className="mt-1 text-sm text-red-600">{errors.description}</p>
-              )}
+              {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
             </div>
 
             {/* Fechas */}
@@ -178,19 +144,12 @@ const CreateProject: React.FC = () => {
                   id="startDate"
                   name="startDate"
                   value={formData.startDate}
-                  onChange={handleInputChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-colors duration-200 ${
-                    errors.startDate 
-                      ? 'border-red-500 focus:ring-red-500' 
-                      : 'border-gray-300 focus:border-transparent'
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+                    errors.startDate ? 'border-red-500' : 'border-gray-300'
                   }`}
-                  style={{ 
-                    focusRingColor: errors.startDate ? undefined : '#823af3'
-                  }}
                 />
-                {errors.startDate && (
-                  <p className="mt-1 text-sm text-red-600">{errors.startDate}</p>
-                )}
+                {errors.startDate && <p className="text-red-500 text-sm mt-1">{errors.startDate}</p>}
               </div>
 
               <div>
@@ -202,11 +161,8 @@ const CreateProject: React.FC = () => {
                   id="endDate"
                   name="endDate"
                   value={formData.endDate}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent transition-colors duration-200"
-                  style={{ 
-                    focusRingColor: '#823af3'
-                  }}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
             </div>
@@ -221,14 +177,11 @@ const CreateProject: React.FC = () => {
                   type="number"
                   id="minCreators"
                   name="minCreators"
-                  value={formData.minCreators}
-                  onChange={handleInputChange}
                   min="1"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent transition-colors duration-200"
-                  style={{ 
-                    focusRingColor: '#823af3'
-                  }}
-                  placeholder="Ej: 1"
+                  value={formData.minCreators}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="1"
                 />
               </div>
 
@@ -240,26 +193,22 @@ const CreateProject: React.FC = () => {
                   type="number"
                   id="maxCreators"
                   name="maxCreators"
-                  value={formData.maxCreators}
-                  onChange={handleInputChange}
                   min="1"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-transparent transition-colors duration-200"
-                  style={{ 
-                    focusRingColor: '#823af3'
-                  }}
-                  placeholder="Ej: 10"
+                  value={formData.maxCreators}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="10"
                 />
               </div>
             </div>
 
-            {/* Submit Button */}
-            <div className="pt-6">
+            {/* Botón de envío */}
+            <div className="flex justify-center">
               <button
                 type="submit"
-                className="w-full text-white py-4 px-6 rounded-lg font-medium text-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-opacity-50"
+                className="text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105"
                 style={{ 
                   backgroundColor: '#823af3',
-                  focusRingColor: '#823af3'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#6f2db8';
