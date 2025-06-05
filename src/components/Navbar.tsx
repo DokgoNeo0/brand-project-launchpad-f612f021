@@ -65,7 +65,7 @@ const Navbar: React.FC = () => {
 
           {/* Right side */}
           <div className="flex items-center space-x-4">
-            {/* Language Selector */}
+            {/* Language Selector with hover */}
             <div 
               className="relative"
               onMouseEnter={() => setShowLanguages(true)}

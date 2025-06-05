@@ -27,16 +27,23 @@ export const useAuth = () => {
   return context;
 };
 
+// Test users for development
+const testUsers = {
+  marca: { email: 'marca@test.com', password: 'marca123', name: 'Marca Demo' },
+  creador: { email: 'creador@test.com', password: 'creador123', name: 'Creador Demo' }
+};
+
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
   const login = (email: string, password: string, type: UserType): boolean => {
-    // Simulación de login - en producción esto sería una llamada al backend
-    if (email && password) {
+    const testUser = testUsers[type];
+    
+    if (email === testUser.email && password === testUser.password) {
       const mockUser: User = {
         id: `${type}-${Date.now()}`,
         email,
-        name: type === 'marca' ? 'Empresa Demo' : 'Creador Demo',
+        name: testUser.name,
         type
       };
       setUser(mockUser);

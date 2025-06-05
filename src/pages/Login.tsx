@@ -34,6 +34,18 @@ const Login: React.FC = () => {
     }
   };
 
+  const fillTestCredentials = (type: UserType) => {
+    if (type === 'marca') {
+      setEmail('marca@test.com');
+      setPassword('marca123');
+      setUserType('marca');
+    } else {
+      setEmail('creador@test.com');
+      setPassword('creador123');
+      setUserType('creador');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -50,6 +62,27 @@ const Login: React.FC = () => {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          {/* Test Credentials */}
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
+            <h3 className="text-sm font-medium text-blue-800 mb-2">Credenciales de prueba:</h3>
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={() => fillTestCredentials('marca')}
+                className="block w-full text-left text-xs text-blue-700 hover:text-blue-900"
+              >
+                <strong>Marca:</strong> marca@test.com / marca123
+              </button>
+              <button
+                type="button"
+                onClick={() => fillTestCredentials('creador')}
+                className="block w-full text-left text-xs text-blue-700 hover:text-blue-900"
+              >
+                <strong>Creador:</strong> creador@test.com / creador123
+              </button>
+            </div>
+          </div>
+
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
