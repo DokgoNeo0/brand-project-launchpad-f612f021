@@ -56,7 +56,8 @@ const CreateProject: React.FC = () => {
         startDate: formData.startDate,
         endDate: formData.endDate || undefined,
         minCreators: formData.minCreators ? parseInt(formData.minCreators) : undefined,
-        maxCreators: formData.maxCreators ? parseInt(formData.maxCreators) : undefined
+        maxCreators: formData.maxCreators ? parseInt(formData.maxCreators) : undefined,
+        status: 'borrador'
       });
       
       alert('Proyecto creado correctamente');

@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useProjects, Project } from '../contexts/ProjectContext';
@@ -38,7 +37,7 @@ const ProjectLibrary: React.FC = () => {
     endDate: '',
     minCreators: '',
     maxCreators: '',
-    status: 'activo' as const
+    status: 'activo' as 'activo' | 'pausado' | 'completado' | 'borrador'
   });
 
   React.useEffect(() => {
@@ -483,7 +482,7 @@ const ProjectLibrary: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
                 <select
                   value={editForm.status}
-                  onChange={(e) => setEditForm({ ...editForm, status: e.target.value as any })}
+                  onChange={(e) => setEditForm({ ...editForm, status: e.target.value as 'activo' | 'pausado' | 'completado' | 'borrador' })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
                   <option value="activo">Activo</option>
